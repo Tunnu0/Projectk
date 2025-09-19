@@ -1,16 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
-  const scores: Record<string, number> = {
-    'UNKNOWN': 0,
-    'VERY_UNLIKELY': 0.1,
-    'UNLIKELY': 0.3,
-    'POSSIBLE': 0.5,
-    'LIKELY': 0.7,
-    'VERY_LIKELY': 0.9
-  }
-  return scores[String(likelihood || 'UNKNOWN')] || 0
-}
-
-// Enhanced emotion to music mapping
+import { NextRequest, NextResponse } from 'next/server'
 import { ImageAnnotatorClient } from '@google-cloud/vision'
 
 export type Emotion = "happy" | "sad" | "angry" | "surprised" | "neutral" | "fearful" | "disgusted"
@@ -30,6 +18,8 @@ interface EmotionDetectionResponse {
 }
 
 // Google Cloud Vision emotion mapping
+// Note: Google Cloud Vision does not provide direct likelihoods for 'fear' or 'disgust'.
+// These are included for completeness but will not be detected by the API.
 const googleEmotionMap: Record<string, Emotion> = {
   'joy': 'happy',
   'sorrow': 'sad',
@@ -55,26 +45,24 @@ const likelihoodToScore = (likelihood: string | null | undefined): number => {
     'LIKELY': 0.7,
     'VERY_LIKELY': 0.9
   }
-  return scores[likelihood || 'UNKNOWN'] || 0
+  return scores[likelihood || 'UNKNOWN'] ?? 0
 }
-      neutral: number
-      sadness: number
-      surprise: number
-    }
-  }
-}
-
-// Enhanced emotion to music mapping
-const emotionMusicMap = {
+// Emotion to music mapping
+const emotionMusicMap: Record<Emotion, {
+  genre: string
+  mood: string
+  tempo: string
+  description: string
+}> = {
   happy: {
-    genre: "Upbeat Pop",
-    mood: "energetic",
+    genre: "Pop",
+    mood: "uplifting",
     tempo: "fast",
-    description: "Cheerful and uplifting music"
+    description: "Cheerful and energetic music"
   },
   sad: {
-    genre: "Melancholic",
-    mood: "emotional",
+    genre: "Ballad",
+    mood: "melancholic",
     tempo: "slow",
     description: "Gentle and comforting music"
   },
@@ -109,7 +97,6 @@ const emotionMusicMap = {
     description: "Clean and refreshing music"
   }
 }
-
 // Google Cloud Vision detection function
 async function detectEmotionWithGoogle(imageData: string): Promise<{ emotion: Emotion; confidence: number }> {
   if (!process.env.GOOGLE_CLOUD_CREDENTIALS) {
