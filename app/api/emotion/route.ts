@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse }) => {
+import { NextRequest, NextResponse } from 'next/server';
   const scores: Record<string, number> = {
     'UNKNOWN': 0,
     'VERY_UNLIKELY': 0.1,
