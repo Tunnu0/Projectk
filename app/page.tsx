@@ -11,9 +11,14 @@ import { EmotionDebug } from "@/components/emotion-debug"
 import { useEmotionDetection } from "@/hooks/use-emotion-detection"
 import { useMusicPlayer } from "@/hooks/use-music-player"
 import LiveCameraPreview from '../components/LiveCameraPreview'
-// ...existing code...
+// ...existing imports...
+import { FaTwitter } from "react-icons/fa";
+// import SocialMediaButton from "@/components/social-media-button"
 
 // ...existing code...
+
+// Removed duplicate default export HomePage to fix redeclaration error.
+
 async function getMicrophoneInput(): Promise<MediaStream> {
   try {
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: true });
