@@ -10,6 +10,19 @@ import { SystemStatus } from "@/components/system-status"
 import { EmotionDebug } from "@/components/emotion-debug"
 import { useEmotionDetection } from "@/hooks/use-emotion-detection"
 import { useMusicPlayer } from "@/hooks/use-music-player"
+import LiveCameraPreview from '../components/LiveCameraPreview'
+// ...existing code...
+
+// ...existing code...
+async function getMicrophoneInput(): Promise<MediaStream> {
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: true });
+    return stream;
+  } catch (err) {
+    console.error("Error accessing microphone/camera:", err);
+    throw err;
+  }
+}
 
 export default function EmotionMusicApp() {
   const [cameraEnabled, setCameraEnabled] = useState(false)
